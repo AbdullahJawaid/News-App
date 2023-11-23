@@ -10,10 +10,38 @@ export default function News(props) {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
+  const capitalizeFirstLetter=(text) =>{
+
+   return text.charAt(0).toUpperCase() + text.slice(1);
+
+   }
+
+  document.title=`${capitalizeFirstLetter(props.category)} - NewsMonkey`;
+
+
+  const updatedNews= async ()=>{
+    try {
+      const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=946c212845cb4c649281c04ca5a01a92&page=${page}&pageSize=${props.pageSize}`;
+
+      setLoading(true)
+      let response = await fetch(url);
+      let data = await response.json();
+      setArticle(data.articles);
+      setTotalResults(data.totalResults);
+      setLoading(false);
+
+    } 
+    catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
+
+  }
+
   useEffect(() => {
     async function fetchData() {
       try {
-        let url = `https://newsapi.org/v2/top-headlines?country=${props.country}  &category=${props.category}&apiKey=946c212845cb4c649281c04ca5a01a92&page=1&pageSize=${props.pageSize}`;
+        let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=946c212845cb4c649281c04ca5a01a92&page=1&pageSize=${props.pageSize}`;
 
         setLoading(true)
         let response = await fetch(url);
@@ -31,6 +59,7 @@ export default function News(props) {
 
     fetchData(); // Call the fetchData function
   }, [props.pageSize]); // Include props.pageSize in the dependency array
+
 
   const handlePrevClick = async () => {
     console.log("pre");
@@ -55,6 +84,9 @@ export default function News(props) {
     }
 
     setLoading(false);
+
+    // setArticle({page:page-1})
+    // updatedNews()
   };
 
   const handleNextClick = async () => {
@@ -80,11 +112,14 @@ export default function News(props) {
     }
 
     setLoading(false);
+
+    // setArticle({page:page+1})
+    // updatedNews()
   };
 
   return (
     <div className="container my-5">
-      <h1 className="text-center">NewsMonkey-Top Headlines</h1>
+      <h1 className="text-center">NewsMonkey- Top {capitalizeFirstLetter(props.category)} Headlines</h1>
       {loading && <Spinner/>}
 
       <div className="row my-5">
@@ -97,6 +132,9 @@ export default function News(props) {
               }
               imageUrl={element.urlToImage}
               newsUrl={element.url}
+              author={element.author}
+              date={element.publishedAt}
+              source={element.source.name}
             />
           </div>
         ))}
@@ -127,5 +165,9 @@ News.propTypes={
   pageSize:propTypes.number,
   category:propTypes.string
 
-
+}
+News.defaultProps={
+  country:"in",
+  pageSize:5,
+  category:"general"
 }

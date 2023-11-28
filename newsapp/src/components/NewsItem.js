@@ -8,7 +8,7 @@ export default function NewsItem(props) {
       <div className="card">
         <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger" style={{left:"91%", zIndex:"1" }}>
           {props.source}
-          <span class="visually-hidden">unread messages</span>
+          <span className="visually-hidden">unread messages</span>
         </span>
         <img
           src={props.imageUrl || blankNewsImg}

@@ -5,7 +5,7 @@ export default function Spinner() {
   return (
     <div className='text-center'>
 
-      <img src={spinner} alt="spinner"  />
+      <img className='my-3' src={spinner} alt="spinner"  />
     </div>
   )
 }
